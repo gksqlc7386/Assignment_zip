@@ -14,7 +14,31 @@ class ViewController: UIViewController {
     @IBOutlet weak var priceLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        fetchProduct()
+        
+        //당겨서 새로고침
+        setupRefreshControl()
+    }
     
+    //당겨서 새로고침 기능
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshData(_:)), for: .valueChanged)
+        return refreshControl
+    }()
+
+    @objc private func refreshData(_ sender: Any) {
+        fetchProduct()
+    }
+    
+    private func setupRefreshControl() {
+        // 현재 ViewController의 view에 있는 scrollView 가져오기
+        if let scrollView = self.view as? UIScrollView {
+            scrollView.refreshControl = refreshControl
+        }
+    }
     
     //다른 상품 보기
     @IBAction func tappedNextButton(_ sender: Any) {
@@ -32,11 +56,6 @@ class ViewController: UIViewController {
         self.present(nextVC, animated: true)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        fetchProduct()
-    }
-    
     //currentProduct가 set되면 각각에 적절한 값 지정
     var currentProduct : RemoteProduct? = nil {
         didSet {
@@ -47,6 +66,7 @@ class ViewController: UIViewController {
                 self.nameLabel.text = currentProduct.title
                 self.priceLabel.text = "\(currentProduct.price)$"
                 self.descriptionLabel.text = currentProduct.description
+                self.refreshControl.endRefreshing() // 새로고침 종료
             }
             
             DispatchQueue.global().async { [weak self] in
