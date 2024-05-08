@@ -6,18 +6,49 @@
 //
 
 import UIKit
+import SnapKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowscene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowscene)
         
-        window?.rootViewController = ViewController()
+        // TabBarController 생성
+        let tabBarController = UITabBarController()
+        
+        // 각 탭에 대한 ViewController 생성
+        let firstViewController = ViewController()
+        let secondViewController = WishViewController()
+        
+        // ViewController를 TabBarController에 추가
+        tabBarController.viewControllers = [firstViewController, secondViewController]
+        
+        // ViewController에 타이틀 지정
+        firstViewController.title = "Search"
+        secondViewController.title = "Wish"
+        
+        if let item = tabBarController.tabBar.items {
+            item[0].selectedImage = UIImage(systemName: "doc.text.magnifyingglass")
+            item[0].image = UIImage(systemName: "doc.text.magnifyingglass")
+            
+            item[1].image = UIImage(systemName: "heart")
+            item[1].selectedImage = UIImage(systemName: "heart.fill")
+        }
+        
+        tabBarController.tabBar.backgroundColor = .lightGray
+        tabBarController.tabBar.tintColor = .black
+        tabBarController.tabBar.unselectedItemTintColor = .white
+        tabBarController.tabBar.itemPositioning = .centered
+        tabBarController.tabBar.layer.cornerRadius = 35
+        // tabBarController.tabBar.itemSpacing = 50 // 이거 왜 안되지..
+        tabBarController.selectedIndex = 0
+        
+        // Window에 TabBarController를 설정
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
 
