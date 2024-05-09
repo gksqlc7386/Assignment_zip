@@ -1,6 +1,7 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 class WishTableViewCell: UITableViewCell {
     
@@ -13,7 +14,6 @@ class WishTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupConstraints()
-        configureUI()
     }
     
     required init?(coder: NSCoder) {
@@ -45,14 +45,14 @@ class WishTableViewCell: UITableViewCell {
         }
     }
     
-    func configureUI() {
-        titleLabel.text = "책 이름"
+    func configureUI(with wish: NSManagedObject) {
+        titleLabel.text = wish.value(forKey: "title") as? String ?? ""
         titleLabel.font = UIFont.boldSystemFont(ofSize: 23)
         
-        authorLabel.text = "작가 이름"
+        authorLabel.text = wish.value(forKey: "author") as? String ?? ""
         authorLabel.font = UIFont.systemFont(ofSize: 16)
         
-        priceLabel.text = "14000원"
+        priceLabel.text = "\(wish.value(forKey: "price") as? String ?? "")원"
         priceLabel.font = UIFont.boldSystemFont(ofSize: 20)
     }
 

@@ -54,18 +54,26 @@ class WishViewController: UIViewController {
 
 extension WishViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return CoreDataManager.shared.fetchWishItems().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WishTableViewCell.identifier, for: indexPath) as! WishTableViewCell
+        
+        let wishes = CoreDataManager.shared.fetchWishItems()
+        let wish = wishes[indexPath.row]
+        cell.configureUI(with: wish)
+        
         return cell
     }
     
-    //셀 삭제
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//        }
-//    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let wishes = CoreDataManager.shared.fetchWishItems()
+            let wish = wishes[indexPath.row]
+            CoreDataManager.shared.deleteWish(wish: wish)
+            
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
 }

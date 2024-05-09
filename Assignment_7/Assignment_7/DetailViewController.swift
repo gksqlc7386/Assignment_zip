@@ -1,6 +1,7 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 class DetailViewController: UIViewController {
     
@@ -120,9 +121,15 @@ class DetailViewController: UIViewController {
         wishButton.backgroundColor = .black
         wishButton.setTitleColor(UIColor.white, for: .normal)
         wishButton.layer.cornerRadius = 10
+        
+        wishButton.addTarget(self, action: #selector(wishButtonTapped), for: .touchUpInside)
     }
     
     @objc func xButtonTapped(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func wishButtonTapped(_ sender: UIButton) {
+        CoreDataManager.shared.saveBook(title: titleLabel.text!, author:authorLabel.text!, price: Int64(selectedDocument!.price))
     }
 }
