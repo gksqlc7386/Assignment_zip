@@ -19,6 +19,8 @@
 		FB7FF78C2BE917110022CF28 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FB7FF78B2BE917110022CF28 /* SnapKit */; };
 		FB9FBE742BEB1CB800A84835 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9FBE732BEB1CB800A84835 /* DetailViewController.swift */; };
 		FB9FBE762BEBB12600A84835 /* WishTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9FBE752BEBB12600A84835 /* WishTableViewCell.swift */; };
+		FB9FBE792BEBCD5D00A84835 /* NetworkingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9FBE782BEBCD5D00A84835 /* NetworkingManager.swift */; };
+		FB9FBE7B2BEBD41400A84835 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9FBE7A2BEBD41400A84835 /* Book.swift */; };
 		FBC100AC2BE9C72900FD02DE /* RecentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC100AB2BE9C72900FD02DE /* RecentCollectionViewCell.swift */; };
 		FBC100AE2BE9F6AD00FD02DE /* SearchCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC100AD2BE9F6AD00FD02DE /* SearchCollectionViewCell.swift */; };
 		FBC100B22BEA74B000FD02DE /* RecentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC100B12BEA74B000FD02DE /* RecentTableViewCell.swift */; };
@@ -59,6 +61,8 @@
 		FB7FF77D2BE9158F0022CF28 /* Assignment_7UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_7UITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FB9FBE732BEB1CB800A84835 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		FB9FBE752BEBB12600A84835 /* WishTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishTableViewCell.swift; sourceTree = "<group>"; };
+		FB9FBE782BEBCD5D00A84835 /* NetworkingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingManager.swift; sourceTree = "<group>"; };
+		FB9FBE7A2BEBD41400A84835 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		FBC100AB2BE9C72900FD02DE /* RecentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentCollectionViewCell.swift; sourceTree = "<group>"; };
 		FBC100AD2BE9F6AD00FD02DE /* SearchCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCollectionViewCell.swift; sourceTree = "<group>"; };
 		FBC100B12BEA74B000FD02DE /* RecentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentTableViewCell.swift; sourceTree = "<group>"; };
@@ -115,6 +119,7 @@
 		FB7FF7592BE9158D0022CF28 /* Assignment_7 */ = {
 			isa = PBXGroup;
 			children = (
+				FB9FBE772BEBCD4700A84835 /* Network */,
 				FB9FBE722BEB1C7400A84835 /* SearchViewController */,
 				FB7FF75A2BE9158D0022CF28 /* AppDelegate.swift */,
 				FB7FF75C2BE9158D0022CF28 /* SceneDelegate.swift */,
@@ -156,6 +161,15 @@
 				FB7FF75E2BE9158D0022CF28 /* ViewController.swift */,
 			);
 			path = SearchViewController;
+			sourceTree = "<group>";
+		};
+		FB9FBE772BEBCD4700A84835 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				FB9FBE782BEBCD5D00A84835 /* NetworkingManager.swift */,
+				FB9FBE7A2BEBD41400A84835 /* Book.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,9 +313,11 @@
 				FB9FBE742BEB1CB800A84835 /* DetailViewController.swift in Sources */,
 				FB7FF75F2BE9158D0022CF28 /* ViewController.swift in Sources */,
 				FBC100AC2BE9C72900FD02DE /* RecentCollectionViewCell.swift in Sources */,
+				FB9FBE792BEBCD5D00A84835 /* NetworkingManager.swift in Sources */,
 				FB7FF75B2BE9158D0022CF28 /* AppDelegate.swift in Sources */,
 				FB7FF75D2BE9158D0022CF28 /* SceneDelegate.swift in Sources */,
 				FBC100B22BEA74B000FD02DE /* RecentTableViewCell.swift in Sources */,
+				FB9FBE7B2BEBD41400A84835 /* Book.swift in Sources */,
 				FBC100B62BEA9F5E00FD02DE /* WishViewController.swift in Sources */,
 				FBC100AE2BE9F6AD00FD02DE /* SearchCollectionViewCell.swift in Sources */,
 				FBC100B42BEA74C800FD02DE /* SearchTableViewCell.swift in Sources */,

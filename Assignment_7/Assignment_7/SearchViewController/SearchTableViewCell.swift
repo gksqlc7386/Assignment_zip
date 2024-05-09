@@ -8,9 +8,11 @@ class SearchTableViewCell: UITableViewCell {
     
     weak var delegate: SelectedCellDelegate?
     
-    let SearchLabel = UILabel()
+    var documents: [Document] = []
     
-    lazy var SearchCollectionView = UICollectionView(frame: .zero, collectionViewLayout: searchCollectionViewLayout)
+    let searchLabel = UILabel()
+    
+    lazy var searchCollectionView = UICollectionView(frame: .zero, collectionViewLayout: searchCollectionViewLayout)
     let searchCollectionViewLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -35,7 +37,6 @@ class SearchTableViewCell: UITableViewCell {
         
         setupConstraints()
         configureUI()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -44,46 +45,52 @@ class SearchTableViewCell: UITableViewCell {
     
     func setupConstraints() {
         
-        [SearchLabel, SearchCollectionView].forEach {
+        [searchLabel, searchCollectionView].forEach {
             contentView.addSubview($0)
         }
         
         //SearchLabel
-        SearchLabel.snp.makeConstraints {
+        searchLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(20)
             $0.leading.equalToSuperview().inset(30)
         }
         
         //SearchCollectionViewController
-        SearchCollectionView.snp.makeConstraints {
-            $0.top.equalTo(SearchLabel.snp.bottom).offset(20)
+        searchCollectionView.snp.makeConstraints {
+            $0.top.equalTo(searchLabel.snp.bottom).offset(20)
             $0.leading.trailing.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview()
         }
     }
     
     func configureUI() {
-        //SearchLabel
-        SearchLabel.text = "Search"
-        SearchLabel.font = UIFont.boldSystemFont(ofSize: 23)
+        //searchLabel
+        searchLabel.text = "Search"
+        searchLabel.font = UIFont.boldSystemFont(ofSize: 23)
         
-        //SearchCollectionView
-        SearchCollectionView.dataSource = self
-        SearchCollectionView.delegate = self
+        //searchCollectionView
+        searchCollectionView.dataSource = self
+        searchCollectionView.delegate = self
         
-        SearchCollectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: SearchCollectionViewCell.identifier)
+        searchCollectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: SearchCollectionViewCell.identifier)
         
-        SearchCollectionView.isScrollEnabled = false
+        searchCollectionView.isScrollEnabled = false
+        
+        // 데이터 변경 후 컬렉션 뷰 리로드
+        searchCollectionView.reloadData()
     }
 
 }
 
 extension SearchTableViewCell : UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return documents.count
     }
         
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCollectionViewCell.identifier, for: indexPath) as! SearchCollectionViewCell
+        let document = documents[indexPath.item]
+        cell.configureUI(with: document)
         return cell
     }
     

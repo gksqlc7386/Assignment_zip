@@ -12,7 +12,6 @@ class SearchCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         
         setupConstraints()
-        configureUI()
     }
     
     required init?(coder: NSCoder) {
@@ -32,17 +31,25 @@ class SearchCollectionViewCell: UICollectionViewCell {
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(bookImgView.snp.bottom).offset(5)
             $0.leading.equalToSuperview().inset(10)
+            $0.trailing.equalToSuperview().inset(10)
         }
         
     }
     
-    func configureUI() {
-        bookImgView.image = UIImage(systemName: "photo")
-        bookImgView.tintColor = .lightGray
-        bookImgView.backgroundColor = .white
-        bookImgView.layer.cornerRadius = 10
+    func configureUI(with document: Document) {
+
+        if let imageURL = URL(string: document.thumbnail) {
+            DispatchQueue.global().async { [weak self] in
+                if let imageData = try? Data(contentsOf: imageURL) {
+                    DispatchQueue.main.async {
+                        self?.bookImgView.image = UIImage(data: imageData)
+                    }
+                }
+            }
+        }
+        bookImgView.layer.cornerRadius = 10 // 이거 왜 안먹음 ...
         
-        titleLabel.text = "titleLabel"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 14)
+        titleLabel.text = document.title
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 12)
     }
 }

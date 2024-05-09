@@ -3,8 +3,16 @@ import SnapKit
 
 class ViewController: UIViewController {
     
-    let searchBar = UISearchBar()
+    var documents : [Document] = []
     
+    lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.searchBarStyle = .minimal
+        searchBar.backgroundImage = UIImage()
+        searchBar.delegate = self
+        return searchBar
+    }()
+
     let tableView = UITableView()
     
     override func viewDidLoad() {
@@ -36,12 +44,7 @@ class ViewController: UIViewController {
     func configureUI() {
         view.backgroundColor = .white
         
-        //searchBar
-        searchBar.searchBarStyle = .minimal // 배경 투명하게
-        searchBar.backgroundImage = UIImage() // 선 제거
-        
         //tableView
-        
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -53,7 +56,8 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource ,SelectedCellDelegate {
+extension ViewController: UITableViewDelegate, UITableViewDataSource, SelectedCellDelegate {
+    //테이블 뷰 설정
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
@@ -80,8 +84,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource ,SelectedCe
         case 0:
             return 350
         case 1:
-            let searchCollectionViewHeight = calculateSearchCollectionViewHeight()
-            return searchCollectionViewHeight
+            return calculateSearchCollectionViewHeight()
         default:
             return 0
         }
@@ -92,15 +95,28 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource ,SelectedCe
         let inset: CGFloat = 20
         let spacing: CGFloat = 10
         let numberOfItemsPerRow: CGFloat = 3
+        let itemCount = CGFloat(documents.count)
             
         let itemWidth = (screenWidth - 2 * inset - (numberOfItemsPerRow - 1) * spacing) / numberOfItemsPerRow
         let itemHeight = itemWidth * 200 / 120 // 아이템의 가로:세로 비율을 120:200으로 가정
         
-        let numberOfItems = 20 / 3 + 2 // 셀의 개수 / 행 + 나누어 떨어지지 않을 경우를 대비해서 +1 , Search글씨 부분 + 1 -> 나중에 바뀌면 수정
+        let numberOfItems = itemCount / 3 + 2 // 셀의 개수 / 행 + 나누어 떨어지지 않을 경우를 대비해서 +1 , Search글씨 부분 + 1 -> 나중에 바뀌면 수정
         let collectionViewHeight = itemHeight * CGFloat(numberOfItems)
         return collectionViewHeight
     }
     
+    // documents 배열이 업데이트될 때마다 호출되는 메서드
+    func updateTableView() {
+        tableView.reloadData()
+    }
+
+    // 검색 완료 시 documents 배열을 업데이트하고 테이블 뷰를 갱신하는 메서드
+    func updateDocuments(with documents: [Document]) {
+        self.documents = documents
+        updateTableView()
+    }
+    
+    //셀 선택 시 세부 화면
     func cellDidSelectItem() {
         let detailVC = DetailViewController()
         detailVC.modalPresentationStyle = .fullScreen
@@ -111,6 +127,29 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource ,SelectedCe
 //셀 선택 시
 protocol SelectedCellDelegate: AnyObject {
     func cellDidSelectItem()
+}
+
+extension ViewController: UISearchBarDelegate {
+    //검색 완료 시(Enter 눌렀을 때) 데이터 가져오기
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let searchText = searchBar.text {
+            NetworkingManager.shared.fetchBookAPI(query: searchText) { result in
+                switch result {
+                case .success(let book):
+                    DispatchQueue.main.async {
+                        if let cell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? SearchTableViewCell {
+                            cell.documents = book.documents
+                            cell.searchCollectionView.reloadData()
+                            self.updateDocuments(with: book.documents)
+                        }
+                    }
+                case .failure(let error):
+                    print("Error fetching book: \(error)")
+                }
+            }
+        }
+        searchBar.resignFirstResponder()
+    }
 }
 
 
