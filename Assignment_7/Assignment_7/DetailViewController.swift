@@ -4,6 +4,8 @@ import SnapKit
 
 class DetailViewController: UIViewController {
     
+    var selectedDocument: Document?
+    
     let backButton = UIButton()
     let detailView = UIView()
     let bookImgView = UIImageView()
@@ -53,7 +55,7 @@ class DetailViewController: UIViewController {
         
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(authorLabel.snp.bottom).offset(10)
-            $0.centerX.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(20)
         }
         
         summaryLabel.snp.makeConstraints{
@@ -90,24 +92,31 @@ class DetailViewController: UIViewController {
         
         //bookImgView
         bookImgView.layer.cornerRadius = 20
-        bookImgView.image = UIImage(systemName: "photo")
-        bookImgView.tintColor = .white
-        bookImgView.backgroundColor = .gray
+        if let imageURL = URL(string: selectedDocument!.thumbnail) {
+            DispatchQueue.global().async { [weak self] in
+                if let imageData = try? Data(contentsOf: imageURL) {
+                    DispatchQueue.main.async {
+                        self?.bookImgView.image = UIImage(data: imageData)
+                    }
+                }
+            }
+        }
         
         //authorLabel
-        authorLabel.text = "작가명"
+        authorLabel.text = selectedDocument?.authors[0]
         authorLabel.textColor = .lightGray
         
         //titleLabel
-        titleLabel.text = "책 이름"
+        titleLabel.text = selectedDocument?.title
         titleLabel.font = UIFont.boldSystemFont(ofSize: 23)
+        titleLabel.textAlignment = .center
         
         //summaryLabel
-        summaryLabel.text = "줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리 줄거리"
-        summaryLabel.numberOfLines = 0
+        summaryLabel.text = selectedDocument?.contents
+        summaryLabel.numberOfLines = 6
         
         //wishButton
-        wishButton.setTitle("담기 / 가격", for: .normal)
+        wishButton.setTitle("\(selectedDocument!.price)원 / 담기", for: .normal)
         wishButton.backgroundColor = .black
         wishButton.setTitleColor(UIColor.white, for: .normal)
         wishButton.layer.cornerRadius = 10

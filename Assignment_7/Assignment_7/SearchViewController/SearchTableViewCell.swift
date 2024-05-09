@@ -95,6 +95,6 @@ extension SearchTableViewCell : UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.cellDidSelectItem()
+        delegate?.cellDidSelectItem(with: documents[indexPath.item])
     }
 }

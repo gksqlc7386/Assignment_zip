@@ -7,6 +7,8 @@ class RecentTableViewCell: UITableViewCell {
     
     weak var delegate: SelectedCellDelegate?
     
+    var documents:[Document] = []
+    
     let recentView = UIView()
     let recentLabel = UILabel()
     lazy var RecentCollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
@@ -98,6 +100,6 @@ extension RecentTableViewCell: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.cellDidSelectItem()
+        delegate?.cellDidSelectItem(with: documents[indexPath.item])
     }
 }

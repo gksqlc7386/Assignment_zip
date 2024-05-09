@@ -57,6 +57,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource, SelectedCellDelegate {
+    
     //테이블 뷰 설정
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
@@ -105,28 +106,29 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, SelectedCe
         return collectionViewHeight
     }
     
-    // documents 배열이 업데이트될 때마다 호출되는 메서드
+    // documents 배열이 업데이트될 때마다 호출
     func updateTableView() {
         tableView.reloadData()
     }
 
-    // 검색 완료 시 documents 배열을 업데이트하고 테이블 뷰를 갱신하는 메서드
+    // 검색 완료 시 documents 배열을 업데이트하고 테이블 뷰를 갱신
     func updateDocuments(with documents: [Document]) {
         self.documents = documents
         updateTableView()
     }
     
     //셀 선택 시 세부 화면
-    func cellDidSelectItem() {
+    func cellDidSelectItem(with document: Document) {
         let detailVC = DetailViewController()
         detailVC.modalPresentationStyle = .fullScreen
+        detailVC.selectedDocument = document
         self.present(detailVC, animated: true)
     }
 }
 
 //셀 선택 시
 protocol SelectedCellDelegate: AnyObject {
-    func cellDidSelectItem()
+    func cellDidSelectItem(with document: Document)
 }
 
 extension ViewController: UISearchBarDelegate {
