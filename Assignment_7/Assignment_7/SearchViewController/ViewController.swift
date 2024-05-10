@@ -150,7 +150,7 @@ extension ViewController: UISearchBarDelegate {
                 }
             }
         }
-        searchBar.resignFirstResponder()
+        searchBar.resignFirstResponder() //서치바 키보드 닫기
     }
 }
 

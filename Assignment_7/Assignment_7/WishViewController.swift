@@ -15,6 +15,11 @@ class WishViewController: UIViewController {
         configureUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData() // 데이터 새로고침
+    }
+    
     func setupConstraints() {
         [pageTitleLabel, deleteButton, tableView].forEach {
             view.addSubview($0)

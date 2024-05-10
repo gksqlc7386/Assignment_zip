@@ -140,6 +140,7 @@ class DetailViewController: UIViewController {
             self?.dismiss(animated: true, completion: nil)
         }
         alert.addAction(okAction)
+        
         present(alert, animated: true, completion: nil)
     }
 }
