@@ -29,31 +29,32 @@ class WishTableViewCell: UITableViewCell {
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
             $0.leading.equalToSuperview().inset(20)
+            $0.trailing.equalToSuperview().inset(80)
         }
         
         authorLabel.snp.makeConstraints{
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
             $0.leading.equalToSuperview().inset(20)
-            $0.trailing.equalTo(priceLabel.snp.leading).inset(20)
             $0.bottom.equalToSuperview().inset(20)
         }
         
         priceLabel.snp.makeConstraints {
             $0.bottom.equalToSuperview().inset(20)
             $0.trailing.equalToSuperview().inset(20)
-            
+            $0.leading.equalTo(authorLabel.snp.trailing).offset(50)
         }
     }
     
     func configureUI(with wish: NSManagedObject) {
         titleLabel.text = wish.value(forKey: "title") as? String ?? ""
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 23)
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        titleLabel.numberOfLines = 2
         
         authorLabel.text = wish.value(forKey: "author") as? String ?? ""
         authorLabel.font = UIFont.systemFont(ofSize: 16)
         
-        priceLabel.text = "\(wish.value(forKey: "price") as? String ?? "")원"
-        priceLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        priceLabel.text = "\(wish.value(forKey: "price") as? Int64 ?? 0)원"
+        priceLabel.font = UIFont.boldSystemFont(ofSize: 18)
     }
 
 }

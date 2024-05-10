@@ -39,7 +39,7 @@ class CoreDataManager {
         do {
             try managedContext.save()
         } catch let error as NSError {
-            print("Could not save.")
+            print("Could not save: \(error.localizedDescription)")
         }
     }
     
@@ -50,7 +50,7 @@ class CoreDataManager {
             let wishes = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
             return wishes
         } catch let error as NSError {
-            print("Could not fetch.")
+            print("Could not fetch: \(error.localizedDescription)")
             return []
         }
     }
@@ -59,10 +59,23 @@ class CoreDataManager {
         managedContext.delete(wish)
         do {
             try managedContext.save()
-            print("deleted")
         } catch let error as NSError {
-            print("failed")
+            print("Could not delete: \(error.localizedDescription)")
         }
     }
+    
+    func deleteAllWishes() {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "WishData")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try managedContext.execute(deleteRequest)
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not delete all wishes: \(error.localizedDescription)")
+        }
+    }
+
+    
 }
 

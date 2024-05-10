@@ -1,4 +1,5 @@
 import UIKit
+import CoreData
 import SnapKit
 
 class WishViewController: UIViewController {
@@ -44,12 +45,30 @@ class WishViewController: UIViewController {
         
         deleteButton.setImage(UIImage(systemName: "trash"), for: .normal)
         deleteButton.tintColor = .systemRed
+        deleteButton.addTarget(self, action: #selector(trashButtonTapped), for: .touchUpInside)
         
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(WishTableViewCell.self, forCellReuseIdentifier: WishTableViewCell.identifier)
     }
-
+    
+    //전체 삭제
+    @objc func trashButtonTapped(_ sender : UIButton) {
+        let alert = UIAlertController(title: "도서 전체 삭제", message: "정말 모든 도서를 삭제하시겠습니까?", preferredStyle: .alert)
+        // 확인 버튼
+        let confirmAction = UIAlertAction(title: "확인", style: .destructive) { _ in
+            CoreDataManager.shared.deleteAllWishes()
+            self.tableView.reloadData()
+        }
+        alert.addAction(confirmAction)
+        
+        // 취소 버튼
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        
+        // 알림창 표시
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 extension WishViewController : UITableViewDataSource, UITableViewDelegate {

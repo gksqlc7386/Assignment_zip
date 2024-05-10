@@ -130,6 +130,16 @@ class DetailViewController: UIViewController {
     }
     
     @objc func wishButtonTapped(_ sender: UIButton) {
+        // 코어데이터 저장
         CoreDataManager.shared.saveBook(title: titleLabel.text!, author:authorLabel.text!, price: Int64(selectedDocument!.price))
+        
+        // Alert 창 생성
+        let alert = UIAlertController(title: "저장 완료", message: "도서가 담겼습니다.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            // 전 페이지로 돌아가기
+            self?.dismiss(animated: true, completion: nil)
+        }
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
     }
 }
