@@ -1,4 +1,5 @@
 import UIKit
+import CoreData
 import SnapKit
 
 class ViewController: UIViewController {
@@ -21,7 +22,7 @@ class ViewController: UIViewController {
         setupConstraints()
         configureUI()
     }
-    
+
     func setupConstraints() {
         
         [searchBar, tableView].forEach {
@@ -52,11 +53,10 @@ class ViewController: UIViewController {
         tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.identifier)
         
         tableView.separatorStyle = .none
-
     }
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource, SelectedCellDelegate {
+extension ViewController: UITableViewDelegate, UITableViewDataSource, CellConnectDelegate {
     
     //테이블 뷰 설정
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -67,6 +67,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, SelectedCe
         switch indexPath.row {
         case 0:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: RecentTableViewCell.identifier, for: indexPath) as? RecentTableViewCell else { return .init() }
+            cell.recentData = CoreDataManager.shared.fetchRecentItems()
             cell.selectionStyle = .none
             cell.delegate = self
             return cell
@@ -105,16 +106,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, SelectedCe
         let collectionViewHeight = itemHeight * CGFloat(numberOfItems)
         return collectionViewHeight
     }
-    
-    // documents 배열이 업데이트될 때마다 호출
-    func updateTableView() {
-        tableView.reloadData()
-    }
 
     // 검색 완료 시 documents 배열을 업데이트하고 테이블 뷰를 갱신
     func updateDocuments(with documents: [Document]) {
         self.documents = documents
-        updateTableView()
+        tableView.reloadData()
     }
     
     //셀 선택 시 세부 화면
@@ -122,13 +118,45 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, SelectedCe
         let detailVC = DetailViewController()
         detailVC.modalPresentationStyle = .fullScreen
         detailVC.selectedDocument = document
+        
+        // 선택 시 RecentData에 저장
+        CoreDataManager.shared.saveRecentBook(title: document.title, author: document.authors[0], thumbnail: document.thumbnail)
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? RecentTableViewCell {
+            cell.RecentCollectionView.reloadData()
+        }
+        self.tableView.reloadData()
+        
         self.present(detailVC, animated: true)
+    }
+    
+    //RecentTableViewCell에서 휴지통 클릭 시 실행될 메소드
+    func trashButtonTapped() {
+        let alert = UIAlertController(title: "최근 본 책 삭제", message: "최근 본 책 내역을 모두 삭제하시겠습니까?", preferredStyle: .alert)
+        // 확인 버튼
+        let confirmAction = UIAlertAction(title: "확인", style: .destructive) { _ in
+            CoreDataManager.shared.deleteAllRecentBooks()
+            if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? RecentTableViewCell {
+                cell.RecentCollectionView.reloadData()
+            }
+            self.tableView.reloadData()
+        }
+        alert.addAction(confirmAction)
+        
+        // 취소 버튼
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        
+        // 알림창 표시
+        present(alert, animated: true, completion: nil)
     }
 }
 
-//셀 선택 시
-protocol SelectedCellDelegate: AnyObject {
+protocol CellConnectDelegate: AnyObject {
+    //셀 선택 시 세부화면으로 가기 위한 함수
     func cellDidSelectItem(with document: Document)
+    
+    //RecentTableView에서 삭제 버튼 클릭 시 alert창을 띄우기 위한 메서드
+    func trashButtonTapped()
 }
 
 extension ViewController: UISearchBarDelegate {
@@ -153,5 +181,3 @@ extension ViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder() //서치바 키보드 닫기
     }
 }
-
-

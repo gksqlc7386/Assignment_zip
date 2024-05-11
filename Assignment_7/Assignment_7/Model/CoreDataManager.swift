@@ -26,7 +26,7 @@ class CoreDataManager {
         return appDelegate.persistentContainer.viewContext
     }
     
-    // MARK: - methods
+    // MARK: - methods (WishData)
     
     func saveBook(title: String, author: String, price: Int64) {
         let entity = NSEntityDescription.entity(forEntityName: "WishData", in: managedContext)!
@@ -39,7 +39,7 @@ class CoreDataManager {
         do {
             try managedContext.save()
         } catch let error as NSError {
-            print("Could not save: \(error.localizedDescription)")
+            print("Could not save WishBook: \(error.localizedDescription)")
         }
     }
     
@@ -75,7 +75,46 @@ class CoreDataManager {
             print("Could not delete all wishes: \(error.localizedDescription)")
         }
     }
-
     
+    // MARK: - methods (RecentData)
+    
+    func saveRecentBook(title: String, author: String, thumbnail: String) {
+        let entity = NSEntityDescription.entity(forEntityName: "RecentData", in: managedContext)!
+        let recent = NSManagedObject(entity: entity, insertInto: managedContext)
+        
+        recent.setValue(title, forKeyPath: "title")
+        recent.setValue(author, forKeyPath: "author")
+        recent.setValue(thumbnail, forKeyPath: "thumbnail")
+        
+        do {
+            try managedContext.save()
+            print("recentBook saved")
+        } catch let error as NSError {
+            print("Could not save recentBook: \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchRecentItems() -> [NSManagedObject] {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "RecentData")
+        
+        do {
+            let recentBooks = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            return recentBooks
+        } catch let error as NSError {
+            print("Could not fetch recentBooks: \(error.localizedDescription)")
+            return []
+        }
+    }
+    
+    func deleteAllRecentBooks() {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "RecentData")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do {
+            try managedContext.execute(deleteRequest)
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not delete all recentBooks: \(error.localizedDescription)")
+        }
+    }
 }
 

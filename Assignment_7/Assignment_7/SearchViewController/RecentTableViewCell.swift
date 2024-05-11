@@ -1,16 +1,21 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 class RecentTableViewCell: UITableViewCell {
+    
     static let identifier = String(describing: RecentTableViewCell.self)
     
-    weak var delegate: SelectedCellDelegate?
+    weak var delegate: CellConnectDelegate?
     
     var documents:[Document] = []
     
+    var recentData: [NSManagedObject] = []
+    
     let recentView = UIView()
     let recentLabel = UILabel()
+    let recentDeleteButton = UIButton()
     lazy var RecentCollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
     let collectionViewLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
@@ -36,7 +41,7 @@ class RecentTableViewCell: UITableViewCell {
         
         contentView.addSubview(recentView)
         
-        [recentLabel,RecentCollectionView].forEach {
+        [recentLabel,recentDeleteButton,RecentCollectionView].forEach {
             recentView.addSubview($0)
         }
         
@@ -51,6 +56,11 @@ class RecentTableViewCell: UITableViewCell {
         recentLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
             $0.leading.equalToSuperview().inset(20)
+        }
+        
+        recentDeleteButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(20)
+            $0.trailing.equalToSuperview().inset(20)
         }
         
         RecentCollectionView.snp.makeConstraints {
@@ -79,26 +89,37 @@ class RecentTableViewCell: UITableViewCell {
         recentLabel.text = "Recent"
         recentLabel.font = UIFont.boldSystemFont(ofSize: 23)
         
+        //recentDeleteButton
+        recentDeleteButton.setImage(UIImage(systemName: "trash"), for: .normal)
+        recentDeleteButton.tintColor = .lightGray
+        recentDeleteButton.addTarget(self, action: #selector(trashButtonTapped), for: .touchUpInside)
+        
         //RecentCollectionView
         RecentCollectionView.dataSource = self
         RecentCollectionView.delegate = self
                 
         RecentCollectionView.register(RecentCollectionViewCell.self, forCellWithReuseIdentifier: RecentCollectionViewCell.identifier)
-       
     }
-
+    
+    //전체 삭제
+    @objc func trashButtonTapped(_ sender : UIButton) {
+        delegate?.trashButtonTapped()
+    }
 }
 
 extension RecentTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return recentData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentCollectionViewCell.identifier, for: indexPath) as! RecentCollectionViewCell
+        let data = recentData[indexPath.item]
+        cell.configureUI(with: data)
         return cell
     }
     
+    //선택 시 세부화면으로 이동
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         delegate?.cellDidSelectItem(with: documents[indexPath.item])
     }

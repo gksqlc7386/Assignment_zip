@@ -6,7 +6,7 @@ class SearchTableViewCell: UITableViewCell {
     
     static let identifier = String(describing: SearchTableViewCell.self)
     
-    weak var delegate: SelectedCellDelegate?
+    weak var delegate: CellConnectDelegate?
     
     var documents: [Document] = []
     
@@ -95,6 +95,7 @@ extension SearchTableViewCell : UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let document = documents[indexPath.item]
         delegate?.cellDidSelectItem(with: documents[indexPath.item])
     }
 }
